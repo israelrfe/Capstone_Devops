@@ -1,0 +1,26 @@
+name: Running tests
+
+on:
+    push:
+    pull_request:
+    
+jobs:
+  runthetests:
+            name: Run the tests
+            runs-on: macos-latest
+            steps:
+            - name: Step One
+              uses: actions/checkout@v3
+            - name: Step two - use Node
+              uses: actions/setup-node@v3
+            - run: npm ci
+            - run: npm run build --if-present
+            - run: npm test
+  
+  buildtheimage:
+              needs: [runthetests]
+              runs-on: macos-latest
+              steps:
+              - uses: actions/checkout@v3
+              - name: Build the Docker image
+                run: docker build . --file Dockerfile --tag CapstoneProject-DevOps:$(date +%s)
